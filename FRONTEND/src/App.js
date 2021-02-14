@@ -1,10 +1,25 @@
-import "./styles.css";
+import React from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
-export default function App() {
+import "./styles.css";
+import Registro from "./components/registro";
+import IniciarSesion from "./components/iniciarSeccion";
+import ListaTareas from "./components/listaTareas"
+
+
+
+
+
+const App = () => {
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/" component={IniciarSesion} />
+        <Route path="/Registro" component={Registro} />
+        <Route path="/listaTareas" component={ListaTareas} />
+      </Switch>
+    </BrowserRouter>
   );
 }
+
+export default App;

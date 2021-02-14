@@ -1,4 +1,32 @@
 .App {
   font-family: sans-serif;
   text-align: center;
+  color: green;
+}
+
+.Boton1{
+  background-color:#b34180;
+  color:white;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60vh;
+  height: 7vh;
+  font-size: 20px;
+}
+
+
+.botonimagen{
+  background-image:url(https://raw.githubusercontent.com/JuanManuel-GAA/equipo7_gaa_ppi2020/master/Recursos%20gu%C3%ADa/iconoAgredar.png);
+  background-repeat:no-repeat;
+  height:100px;
+  width:100px;
+  background-position:center;
+  float: left;
+  
+}
+
+.menu3 {
+  background-color: #b34180;
+  color: white;
 }
