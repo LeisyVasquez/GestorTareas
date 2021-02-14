@@ -1,8 +1,3 @@
-.App {
-  font-family: sans-serif;
-  text-align: center;
-  color: green;
-}
 
 .Boton1{
   background-color:#b34180;
@@ -15,6 +10,10 @@
   font-size: 20px;
 }
 
+.menu3 {
+  background-color: #b34180;
+  color: white;
+}
 
 .botonimagen{
   background-image:url(https://raw.githubusercontent.com/JuanManuel-GAA/equipo7_gaa_ppi2020/master/Recursos%20gu%C3%ADa/iconoAgredar.png);
@@ -26,7 +25,7 @@
   
 }
 
-.menu3 {
+.modalbg{
   background-color: #b34180;
-  color: white;
 }
+
