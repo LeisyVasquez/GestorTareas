@@ -11,7 +11,7 @@ const TarjetaSchema = new Schema({
     },
     imagen: {
         type: String,
-        imagen: {$or:[{ $regex: /.png/ },{ $regex: /.PNG/ }]},
+        imagen: {$regex: /jpeg|jpg|png/},
         require: true
     },
     descripcion: {

@@ -1,5 +1,8 @@
 const { Router } = require('express');
 const router = Router();
+const multer = require('multer');
+const path = require('path');
+const uuid = require('uuid/v4');
 
 //Schemas
 const Usuario = require('../models/Usuario')
@@ -76,13 +79,13 @@ router.post('/tarjeta', async (req, res) => {
         await newTarjeta.save((err, resulset) => {
             if (err) {
                 console.log(err);
-                res.json({ message: 'Error en el sevidor' });
+                res.status(210).json({ error: err.message});
             } if (resulset) {
-                res.send('Tarjeta guardada');
+                res.status(201).json({ message: "Todo bien, todo bonito" });
             }
         });
     } else {
-        res.send('Falta ingresar uno de los valores');
+        res.status(221).json({ message: 'Falta algún campo por enviar' });
     }
 });
 
@@ -107,5 +110,39 @@ router.delete('/tarjeta/:id', async (req, res) => {
     await Tarjeta.findByIdAndDelete(id);
     res.json('Registro eliminado')
 });
+
+
+//Establecer el lugar de almacenamiento para las imagenes de las tarjetas
+const storage = multer.diskStorage({
+    destination: path.join(__dirname,'../../FRONTEND/public/images'),
+    filename:  (req, file, cb) => {
+        cb(null, uuid()+file.originalname);
+    }
+})
+
+//Carga de imagen
+const uploadImg = multer({
+    storage,
+    limits: {fileSize: 1000000},
+    fileFilter:function (req,file,cb){
+        var filetypes = /jpeg|jpg|png/;
+        var mimetype = filetypes.test(file.mimetype);
+        var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        if (mimetype && extname) {
+            return cb(null, true);
+        }
+        cb(new Error("Error: File upload only supports the following filetypes - " + filetypes));
+    }
+}).single('img');
+
+//Servicio para cargar la imagen
+router.post('/send-img', async(req, res)=>{
+    uploadImg(req,res,(err)=>{
+        if (err) {      
+            return  res.status(210).json({status:0, message: err});
+        }
+        res.status(201).json({status:1,message: req.file});
+    })
+})
 
 module.exports = router;
