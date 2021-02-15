@@ -1,14 +1,17 @@
 const { Schema, model } = require('mongoose');
 
 const UsuarioSchema = new Schema({
-    nombres:{
+    nombres: {
         type: String,
         required: [true, 'El nombre es necesario'],
         maxlength: [50, 'El nombre no puede exceder los 50 caracteres'],
         minlength: [3, 'El nombre debe contener 3 o más caracteres']
     },
-    apellidos:{
+    apellidos: {
         type: String,
+        required: [true, 'El apellido es necesario'],
+        maxlength: [100, 'El apellido no puede exceder los 50 caracteres'],
+        minlength: [3, 'El apellido debe contener 3 o más caracteres'],
     },
     correo: {
         type: String,
@@ -19,7 +22,7 @@ const UsuarioSchema = new Schema({
     },
     contrasena: {
         type: String,
-        require: true
+        required: [true, 'La contraseña es requerida'],
     }
 });
 

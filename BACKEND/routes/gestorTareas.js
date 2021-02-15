@@ -15,27 +15,47 @@ router.get('/usuario', async (req, res) => {
 //Insertar usuarios
 router.post('/usuario', async (req, res) => {
     const { nombres, apellidos, correo, contrasena } = req.body;
-    const newUsuario = new Usuario({ nombres, apellidos, correo, contrasena });
-    console.log(newUsuario);
-    newUsuario.save();
-    res.send('Usuario guardado');
+    if (nombres !== "" && apellidos !== "" && correo !== "" && contrasena !== "") {
+        const newUsuario = new Usuario({ nombres, apellidos, correo, contrasena });
+        console.log(newUsuario);
+        newUsuario.save(
+            (err, resulset) => {
+                if (err) {
+                    res.status(210).json({ message: err.message});
+                    console.log(err);
+                } if (resulset) {
+                    res.status(201).json({ id: resulset.id });
+                }
+            })
+    } else {
+    res.status(221).json({ message: 'Falta algún campo por enviar' });
+}
 });
+
+//Eliminar usuario
+router.delete('/usuario/:id', async (req, res) => {
+    const id = req.params.id;
+    await Usuario.findByIdAndDelete(id);
+    res.json('Registro eliminado')
+});
+
 
 //Inicio de sección
 router.post('/login', async (req, res) => {
     const { correo, contrasena } = req.body;
     if (correo != "" & contrasena != "") {
-    await Usuario.find({ $and: [{ correo: `${correo}` }, { contrasena: `${contrasena}` }] },
-        (err, resulset) => {
-            if (err) {
-                console.log(err);
-                res.status(500).json({ message: 'Error en el sevidor' });
-            } if (resulset.length == 1) {
-                res.status(200).json({ state:1, message: 'Error en el sevidor' });
-            } else{
-                res.status(400).json("Credenciales incorrectas")
-            }
-        }).select('_id')
+        await Usuario.find({ $and: [{ correo: `${correo}` }, { contrasena: `${contrasena}` }] },
+            (err, resulset) => {
+                if (err) {
+                    console.log(err);
+                    res.status(221).json({ message: 'Error en el sevidor' });
+                } if (resulset.length == 1) {
+                    console.log(resulset[0]['_id'])
+                    res.status(200).json({ id: resulset[0]['_id'] });
+                } else {
+                    res.status(210).json("Credenciales incorrectas")
+                }
+            }).select('_id')
     } else {
         res.send('Falta ingresar uno de los valores');
     }

@@ -27,4 +27,5 @@ const TarjetaSchema = new Schema({
         required: true
     }
 });
+
 module.exports = model('Tarjeta', TarjetaSchema);

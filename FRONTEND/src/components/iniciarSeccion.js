@@ -2,13 +2,13 @@ import {React, useState, useEffect} from "react";
 import { Container, Navbar, Button} from "react-bootstrap";
 import api from '../axios/axios';
 import swal from "sweetalert2";
-//import { saveToLocal } from "../functions/localStorage";
+import { saveToLocal } from "../localStorage/localStorage";
 
 const InicioSeccion = () => {
     const [userData, setUserData] = useState({});
     useEffect(() => {});
 
-    function insertUser(e) {
+    function datosUsuario(e) {
         let name = e.target.id;
         let value = e.target.value;
         setUserData((state) => ({
@@ -25,9 +25,7 @@ const InicioSeccion = () => {
             contrasena: userData.password
         }
         api.post("/login", data).then((res, err)=>{
-            console.log(res.status)
-            console.log(res.state)
-            if(res.status === 500){
+            if(res.status === 221){
                 swal.fire({
                     icon: "error",
                     title: "Error en el servidor",
@@ -38,11 +36,18 @@ const InicioSeccion = () => {
                   console.log(res.status)
             }if(res.status === 200){
                 console.log(res.status);
-                //const id = res.message;
-                //console.log(id);
-                //window.location.href = "/listaTareas"
-            }if(res.status === 400){               
+                console.log(res.data.id)
+                const id = res.data.id;
+                saveToLocal('id', id);
+                window.location.href = "/listaTareas"
+            }if(res.status === 210){               
                   console.log(res.status)
+                  swal.fire({
+                    icon: "error",
+                    title: "Credenciales incorrectas",
+                    confirmButtonText: "Entendido",
+                    confirmButtonColor: "#f96332",
+                  });
             }
         })
       }
@@ -64,7 +69,7 @@ const InicioSeccion = () => {
                         className="form-control mb-3"
                         placeholder="Correo electrónico"
                         name="correo"
-                        onChange={insertUser}
+                        onChange={datosUsuario}
                     />
 
                     <input
@@ -73,11 +78,11 @@ const InicioSeccion = () => {
                         className="form-control"
                         placeholder="Contraseña"
                         name="contrasena"
-                        onChange={insertUser}
+                        onChange={datosUsuario}
                     />
-                    <a  className="Boton1 mt-5">
-                    <input  type="button" value="Iniciar Sección" className="Boton1" onClick={sendInfo}/>
-                    </a>
+                    
+                    <input  type="button" value="Iniciar Sección" className="Boton1 mt-5" onClick={sendInfo}/>
+                    
             
                     <br></br>
                     <a href="/Registro" className="Boton1">
@@ -92,4 +97,3 @@ const InicioSeccion = () => {
 }
 
 export default InicioSeccion;
-//<!---->

@@ -93,13 +93,13 @@ db.alumnos.find({
     apellidos: { $regex: "Her" }
 })
 
-//Cuemta losdocumentos que hay en la colección
+//Cuenta los documentos que hay en la colección
 db.alumnos.count()
 //Contar los que son mayores de 17
 db.alumnos.find(
     { edad: { $gt: 17 } }
 ).count()
-//Buscar 5 reistros de la coleeción y ordenelos descendentes
+//Buscar 5 registros de la coleeción y ordenelos descendentes
 db.alumnos.find().limit(5).sort({
     nombres: -1
    }
