@@ -24,17 +24,21 @@ router.post('/usuario', async (req, res) => {
 //Inicio de sección
 router.post('/login', async (req, res) => {
     const { correo, contrasena } = req.body;
+    if (correo != "" & contrasena != "") {
     await Usuario.find({ $and: [{ correo: `${correo}` }, { contrasena: `${contrasena}` }] },
         (err, resulset) => {
             if (err) {
                 console.log(err);
-                res.json({ message: 'Error en el sevidor' });
+                res.status(500).json({ message: 'Error en el sevidor' });
             } if (resulset.length == 1) {
-                res.send(resulset[0]);
-            } else {
-                res.json("Credenciales incorrectas")
+                res.status(200).json({ state:1, message: 'Error en el sevidor' });
+            } else{
+                res.status(400).json("Credenciales incorrectas")
             }
         }).select('_id')
+    } else {
+        res.send('Falta ingresar uno de los valores');
+    }
 });
 
 //Ver tarjetas
