@@ -1,9 +1,18 @@
 //Crear un esquema e insertar un registro 
-db.alumnos.insert({
+db.usuarios.insert({
     nombres: 'Leisy',
     apellidos: 'Vasquez Martinez',
     correo: 'Leisyyyvalentina@gmail.com',
     contrasena: '123456789'
+});
+
+db.tarjetas.insert({
+    id_usuario: "60293f08c49e4631b85af942",
+    nombre: 'Tarea de español',
+    imagen: 'espanol.png',
+    descripcion: 'Ensayo de la modernidad',
+    prioridad: 1,
+    fecha_vencimiento: '10/12/2020'
 });
 
 /*
