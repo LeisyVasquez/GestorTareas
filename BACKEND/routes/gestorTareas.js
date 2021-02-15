@@ -70,6 +70,14 @@ router.get('/tarjeta', async (req, res) => {
     res.json(tarjeta)
 });
 
+//Ver tarjetas filtradas por el id usuario
+router.get('/tarjeta/:id_usuario', async (req, res) => {
+    const {id_usuario} = req.params;
+    const tarjeta = await Tarjeta.find({id_usuario:`${id_usuario}`});
+    res.json(tarjeta)
+});
+
+
 //Insertar tarjeta
 router.post('/tarjeta', async (req, res) => {
     const { id_usuario, nombre, imagen, descripcion, prioridad, fecha_vencimiento } = req.body;

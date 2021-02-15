@@ -6,6 +6,8 @@ import api from '../axios/axios';
 import swal from "sweetalert2";
 
 const ListaTareas = () => {
+    const id_usuario = getFromLocal('id');
+
     //Modal
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -15,7 +17,7 @@ const ListaTareas = () => {
     const [fileImg, setFileImg] = useState("");
     const [imgname, setImgname] = useState("Cargar Imagen");
     const [pathImg, setPathImg] = useState("");
-    useEffect(() => {});
+    
 
     const onChangeImg = (e) => {
         setFileImg(e.target.files[0]);
@@ -74,7 +76,8 @@ const ListaTareas = () => {
     function sendInfo(e){
         e.preventDefault;
         const data = {
-            id_usuario: getFromLocal('id'), 
+            id_usuario: id_usuario,
+            //id_usuario: getFromLocal('id'), 
             nombre: targetData.nombre, 
             imagen: pathImg, 
             descripcion: targetData.descripcion, 
@@ -122,8 +125,26 @@ const ListaTareas = () => {
     }
 
 
-
-
+    //Mostrar tarjetas 
+    const [showCard, setShowCard] = useState({});
+    useEffect(() => {
+        cardPerUser()
+    }, []);
+    
+    const cardPerUser = () => {
+    api.get(`/tarjeta/${id_usuario}`).then(
+      (res) => {
+        setShowCard(res.data)
+        console.log(res.data)
+      }
+    );
+    }
+    
+/*
+ {showCard.map((item) =>
+                            <option key={item.id}>{item.nombre}-{item.codigo}</option>
+                        )};
+*/
     return (
         <div>
             <div className="menu3">
