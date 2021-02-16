@@ -1,5 +1,5 @@
-import { React, useState,useEffect } from "react";
-import { Container, Navbar, Button, Card, Modal, Form, Col } from "react-bootstrap";
+import { React, useState, useEffect } from "react";
+import { Container, Navbar, Button, Card, CardColumns, Modal, Form, Col } from "react-bootstrap";
 import { getFromLocal } from "../localStorage/localStorage";
 
 import api from '../axios/axios';
@@ -17,7 +17,7 @@ const ListaTareas = () => {
     const [fileImg, setFileImg] = useState("");
     const [imgname, setImgname] = useState("Cargar Imagen");
     const [pathImg, setPathImg] = useState("");
-    
+
 
     const onChangeImg = (e) => {
         setFileImg(e.target.files[0]);
@@ -27,38 +27,38 @@ const ListaTareas = () => {
     };
 
     const onSubmitImg = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("img", fileImg, imgname);
-    try {
-      const res = await api.post("/send-img", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.data.status === 0) {
-        setFileImg("");
-        setImgname("Cargue un archivo válido...");
-        swal.fire({
-            title: "Archivo invalido",
-            icon: "error",
-            confirmButtonText: "Entendido",
-            confirmButtonColor: "#f96332",
-          });
-      } else {
-        setPathImg(res.data.message.path);
-        swal.fire({
-          title: "¡Imagen subida!",
-          text: "Puede continuar",
-          icon: "success",
-          confirmButtonText: "¡Entendido!",
-          confirmButtonColor: "#54e346",
-        });
-      }
-    } catch (err) {
-      alert(err);
-    }
-  }; 
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("img", fileImg, imgname);
+        try {
+            const res = await api.post("/send-img", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            if (res.data.status === 0) {
+                setFileImg("");
+                setImgname("Cargue un archivo válido...");
+                swal.fire({
+                    title: "Archivo invalido",
+                    icon: "error",
+                    confirmButtonText: "Entendido",
+                    confirmButtonColor: "#f96332",
+                });
+            } else {
+                setPathImg(res.data.message.path);
+                swal.fire({
+                    title: "¡Imagen subida!",
+                    text: "Puede continuar",
+                    icon: "success",
+                    confirmButtonText: "¡Entendido!",
+                    confirmButtonColor: "#54e346",
+                });
+            }
+        } catch (err) {
+            alert(err);
+        }
+    };
 
     //Insertar tarjeta
     const [targetData, setTargetData] = useState({});
@@ -73,20 +73,19 @@ const ListaTareas = () => {
         console.log(targetData);
     }
 
-    function sendInfo(e){
+    function sendInfo(e) {
         e.preventDefault;
         const data = {
             id_usuario: id_usuario,
-            //id_usuario: getFromLocal('id'), 
-            nombre: targetData.nombre, 
-            imagen: pathImg, 
-            descripcion: targetData.descripcion, 
-            prioridad: targetData.prioridad, 
+            nombre: targetData.nombre,
+            imagen: pathImg,
+            descripcion: targetData.descripcion,
+            prioridad: targetData.prioridad,
             fecha_vencimiento: targetData.fecha_vencimiento
         }
 
-        api.post('/tarjeta', data).then((res)=>{
-            if(res.status === 201){
+        api.post('/tarjeta', data).then((res) => {
+            if (res.status === 201) {
                 console.log(res.status)
                 swal.fire({
                     title: "Tarea creada éxitosamente",
@@ -94,23 +93,23 @@ const ListaTareas = () => {
                     icon: "success",
                     confirmButtonText: "Que maravilla",
                     confirmButtonColor: "#b34180",
-                  });
-                
-                setTimeout(()=>{ 
+                });
+
+                setTimeout(() => {
                     window.location.href = "/listaTareas"
-                 }, 2000);
-               
-            }else if(res.status === 221){
+                }, 2000);
+
+            } else if (res.status === 221) {
                 swal.fire({
                     icon: "error",
                     title: "Digite todos los campos",
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#f96332",
-                  });
+                });
                 console.log(res.status)
-            } else if(res.status === 210){
+            } else if (res.status === 210) {
                 console.log(res.data.error)
-            }else{
+            } else {
                 window.location.href = "/listaTareas"
                 swal.fire({
                     icon: "error",
@@ -118,7 +117,7 @@ const ListaTareas = () => {
                     text: "Intente de nuevo o regrese más tarde",
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#f96332",
-                  });
+                });
             }
         })
         console.log(data)
@@ -126,25 +125,64 @@ const ListaTareas = () => {
 
 
     //Mostrar tarjetas 
-    const [showCard, setShowCard] = useState({});
+    const [showCard, setShowCard] = useState([]);
+
     useEffect(() => {
         cardPerUser()
     }, []);
-    
+
     const cardPerUser = () => {
-    api.get(`/tarjeta/${id_usuario}`).then(
-      (res) => {
-        setShowCard(res.data)
-        console.log(res.data)
-      }
-    );
+        api.get(`/tarjeta/${id_usuario}`).then(
+            (res) => {
+                setShowCard(res.data)
+                console.log(res.data)
+
+            }
+        );
+        console.log(showCard)
     }
-    
-/*
- {showCard.map((item) =>
-                            <option key={item.id}>{item.nombre}-{item.codigo}</option>
-                        )};
-*/
+  
+    //Eliminar Tarjeta 
+    function eliminarTarjeta(e){
+        const id = e.target.value;
+        swal.fire({
+            title: 'Advertencia',
+            text: '¿Seguro quieres eliminar está tarjeta?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Mejor no'
+          }).then((result) => {
+            if (result.value) {
+                api.delete(`/tarjeta/${id}`)
+              swal.fire(
+                'Eliminado',
+                'Tarea eliminada',
+                'success'
+              )
+              setTimeout(() => {
+                window.location.href = "/listaTareas"
+            }, 1500);
+
+            } else if (result.dismiss === swal.DismissReason.cancel) {
+              swal.fire(
+                'Operación cancelada',
+                '',
+                'error'
+              )
+            }
+          })
+        
+    }
+
+    //Editar tarjeta
+    function editarTarjeta(e){
+        console.log(e.target.value);   
+    }
+
+
+
+    console.log(showCard)
     return (
         <div>
             <div className="menu3">
@@ -155,25 +193,39 @@ const ListaTareas = () => {
                 </Navbar>
             </div>
             <Button variant="link" onClick={handleShow} className="botonimagen btn" />
-            <Container className="text-center">
-                <Card style={{ width: '18rem' }} className="mt-5" >
-                    <Card.Img variant="top" src="" alt="img" />
-                    <Card.Body>
-                        <Card.Title>Nombre de la tarjeta</Card.Title>
-                        <Card.Text>
-                            descipción
-                            </Card.Text>
-                        <Button className="ml-1" style={{ background: "#b34180" }}>Editar</Button>
-                        <Button className="ml-1" style={{ background: "#009900" }}>Eliminar</Button>
-                    </Card.Body>
-                </Card>
-            </Container>
+           
+            <Container className="text-center my-5" style={{ width: '65rem' }}>
+                <div className="row row-cols-1 row-cols-md-3 g-4">
+                    {showCard.map((item) => 
+                        <>
+                            <div className="col">
+                                <div className="card h-100" key={item._id}>
+                                    <img src={item.imagen} className="card-img-top" alt="..." />
+                                    <div className="card-body">
+                                        <h5 className="card-title">{item.nombre}</h5>
+                                        <p className="card-text"> {item.descripcion}</p>
+                                        <Button className="ml-3" style={{ background: "#b34180"}} onClick={editarTarjeta} value={item._id} >Editar</Button>
+                                        <Button  key={item._id} className="ml-3" style={{ background: "#009900" }} onClick={eliminarTarjeta} value={item._id}>Eliminar</Button>
+                                        
+                                    </div>
+                                    <div className="card-footer">
+                                        <small className="text-muted">{item.fecha_vencimiento}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )
+                    };
+                </div>
+                </Container>
+               
+
 
             <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton style={{ background: 'rgba(179, 65, 128,0.2)' }}>
                     <Modal.Title>Crear nueva tarea</Modal.Title>
                 </Modal.Header>
-
+                
                 <Modal.Body style={{ background: 'rgba(179, 65, 128,0.2)' }}>
 
                     <Form.Group>
@@ -206,7 +258,7 @@ const ListaTareas = () => {
                     <Form onSubmit={onSubmitImg}>
                         <div className="mb-3">
                             <Form.File id="formcheck-api-custom" custom >
-                                <Form.File.Input id="imagen" onChange={onChangeImg}/>
+                                <Form.File.Input id="imagen" onChange={onChangeImg} />
                                 <Form.File.Label data-browse="Button" style={{ border: '2px solid rgba(179, 65, 128)' }}>{imgname}</Form.File.Label>
                             </Form.File>
                         </div>

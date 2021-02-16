@@ -73,7 +73,7 @@ router.get('/tarjeta', async (req, res) => {
 //Ver tarjetas filtradas por el id usuario
 router.get('/tarjeta/:id_usuario', async (req, res) => {
     const {id_usuario} = req.params;
-    const tarjeta = await Tarjeta.find({id_usuario:`${id_usuario}`});
+    const tarjeta = await Tarjeta.find({id_usuario:`${id_usuario}`}).sort('-_id');
     res.json(tarjeta)
 });
 
@@ -116,7 +116,7 @@ router.put('/tarjeta/:id', async (req, res) => {
 router.delete('/tarjeta/:id', async (req, res) => {
     const id = req.params.id;
     await Tarjeta.findByIdAndDelete(id);
-    res.json('Registro eliminado')
+    res.status(200).json('Registro eliminado')
 });
 
 
