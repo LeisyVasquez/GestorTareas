@@ -24,15 +24,15 @@ router.post('/usuario', async (req, res) => {
         newUsuario.save(
             (err, resulset) => {
                 if (err) {
-                    res.status(210).json({ message: err.message});
+                    res.status(210).json({ message: err.message });
                     console.log(err);
                 } if (resulset) {
                     res.status(201).json({ id: resulset.id });
                 }
             })
     } else {
-    res.status(221).json({ message: 'Falta algún campo por enviar' });
-}
+        res.status(221).json({ message: 'Falta algún campo por enviar' });
+    }
 });
 
 //Eliminar usuario
@@ -72,8 +72,8 @@ router.get('/tarjeta', async (req, res) => {
 
 //Ver tarjetas filtradas por el id usuario
 router.get('/tarjeta/:id_usuario', async (req, res) => {
-    const {id_usuario} = req.params;
-    const tarjeta = await Tarjeta.find({id_usuario:`${id_usuario}`}).sort('-_id');
+    const { id_usuario } = req.params;
+    const tarjeta = await Tarjeta.find({ id_usuario: `${id_usuario}` }).sort('-_id');
     res.json(tarjeta)
 });
 
@@ -87,7 +87,7 @@ router.post('/tarjeta', async (req, res) => {
         await newTarjeta.save((err, resulset) => {
             if (err) {
                 console.log(err);
-                res.status(210).json({ error: err.message});
+                res.status(210).json({ error: err.message });
             } if (resulset) {
                 res.status(201).json({ message: "Todo bien, todo bonito" });
             }
@@ -98,18 +98,23 @@ router.post('/tarjeta', async (req, res) => {
 });
 
 //Actualizar tarjeta
-router.put('/tarjeta/:id', async (req, res) => {
+router.put('/tarjeta/:idCardEdit', async (req, res) => {
     const { nombre, imagen, descripcion, prioridad, fecha_vencimiento } = req.body;
-    const id = req.params.id;
-    await Tarjeta.findByIdAndUpdate(id, {
-        $set: req.body
-    }, (err, resulset) => {
-        if (err) {
-            res.json(err)
+    const idCardEdit = req.params.idCardEdit;
+    if (nombre != "" & imagen != "" & descripcion != "" & prioridad != "" & fecha_vencimiento != "") {
+        await Tarjeta.findByIdAndUpdate(idCardEdit, {
+            $set: req.body
+        }, (err, resulset) => { 
+            if (err) {
+                res.status(221).json(err)
+            } if (resulset) {
+                res.status(200).json({ message: "Todo bien, todo bonito" });
+            }
         }
-        res.json('Registro actualizado')
+        )
+    } else {
+        res.status(210).json({ message: 'Falta algún campo por enviar' });
     }
-    )
 });
 
 //Eliminar tarjeta
@@ -122,17 +127,17 @@ router.delete('/tarjeta/:id', async (req, res) => {
 
 //Establecer el lugar de almacenamiento para las imagenes de las tarjetas
 const storage = multer.diskStorage({
-    destination: path.join(__dirname,'../../FRONTEND/public/images'),
-    filename:  (req, file, cb) => {
-        cb(null, uuid()+file.originalname);
+    destination: path.join(__dirname, '../../FRONTEND/public/images'),
+    filename: (req, file, cb) => {
+        cb(null, uuid() + file.originalname);
     }
 })
 
 //Carga de imagen
 const uploadImg = multer({
     storage,
-    limits: {fileSize: 1000000},
-    fileFilter:function (req,file,cb){
+    limits: { fileSize: 1000000 },
+    fileFilter: function (req, file, cb) {
         var filetypes = /jpeg|jpg|png/;
         var mimetype = filetypes.test(file.mimetype);
         var extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -144,12 +149,12 @@ const uploadImg = multer({
 }).single('img');
 
 //Servicio para cargar la imagen
-router.post('/send-img', async(req, res)=>{
-    uploadImg(req,res,(err)=>{
-        if (err) {      
-            return  res.status(210).json({status:0, message: err});
+router.post('/send-img', async (req, res) => {
+    uploadImg(req, res, (err) => {
+        if (err) {
+            return res.status(210).json({ status: 0, message: err });
         }
-        res.status(201).json({status:1,message: req.file});
+        res.status(201).json({ status: 1, message: req.file });
     })
 })
 
