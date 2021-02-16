@@ -96,11 +96,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Que maravilla",
                     confirmButtonColor: "#009900",
                 });
-                /*
+                
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
-                }, 2000);
-                */
+                }, 1000);
+                
 
             } else if (res.status === 221) {
                 swal.fire({
@@ -155,19 +155,30 @@ const ListaTareas = () => {
             cancelButtonColor: "#f96332",
           }).then((result) => {
             if (result.value) {
-                api.delete(`/tarjeta/${id}`)
-              swal.fire(
-                {title: 'Tarea eliminada',
-                icon: 'success',
-                confirmButtonText: 'Ok',
-                confirmButtonColor: "#009900"
-                }
-              )
-              /*
+                api.delete(`/tarjeta/${id}`).then((res) => {
+                    if(res.status ===200){
+                        swal.fire(
+                            {title: 'Tarea eliminada',
+                            icon: 'success',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: "#009900"
+                            }
+                          )
+                    }else{
+                        swal.fire(
+                            {title: 'Error en el servidor',
+                            icon: 'error',
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: "#f96332"
+                            }
+                          )
+                    }
+                })
+
               setTimeout(() => {
                 window.location.href = "/listaTareas"
-            }, 1500);
-            */
+            }, 1000);
+            
 
             } else if (result.dismiss === swal.DismissReason.cancel) {
               swal.fire(
@@ -212,11 +223,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#009900"
                 });
-                /*
+            
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
-                }, 2000);
-                */
+                }, 1000);
+                
             } else if (res.status === 210) {
                 swal.fire({
                     icon: "error",
