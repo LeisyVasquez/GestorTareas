@@ -35,7 +35,7 @@ const ListaTareas = () => {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            if (res.data.status === 0) {
+            if (res.status === 210) {
                 setFileImg("");
                 setImgname("Cargue un archivo válido...");
                 swal.fire({
@@ -44,8 +44,9 @@ const ListaTareas = () => {
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#f96332",
                 });
-            } else {
+            } if(res.status === 201) {
                 setPathImg(res.data.message.path);
+                console.log(res.data);
                 swal.fire({
                     title: "¡Imagen subida!",
                     text: "Puede continuar",
@@ -53,6 +54,8 @@ const ListaTareas = () => {
                     confirmButtonText: "¡Entendido!",
                     confirmButtonColor: "#54e346",
                 });
+            } else{
+                alert('Error inesperado');
             }
         } catch (err) {
             alert(err);

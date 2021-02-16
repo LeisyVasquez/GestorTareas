@@ -153,9 +153,10 @@ router.post('/send-img', async (req, res) => {
     uploadImg(req, res, (err) => {
         if (err) {
             return res.status(210).json({ status: 0, message: err });
+        }else{
+            console.log(req.file.path)
+            res.status(201).json({ status: 1, message: req.file });
         }
-        console.log(req.file.path)
-        res.status(201).json({ status: 1, message: req.file });
     })
 })
 
