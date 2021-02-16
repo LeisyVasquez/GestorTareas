@@ -96,10 +96,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Que maravilla",
                     confirmButtonColor: "#009900",
                 });
-
+                /*
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
                 }, 2000);
+                */
 
             } else if (res.status === 221) {
                 swal.fire({
@@ -162,9 +163,11 @@ const ListaTareas = () => {
                 confirmButtonColor: "#009900"
                 }
               )
+              /*
               setTimeout(() => {
                 window.location.href = "/listaTareas"
             }, 1500);
+            */
 
             } else if (result.dismiss === swal.DismissReason.cancel) {
               swal.fire(
@@ -209,10 +212,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#009900"
                 });
+                /*
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
                 }, 2000);
-
+                */
             } else if (res.status === 210) {
                 swal.fire({
                     icon: "error",
