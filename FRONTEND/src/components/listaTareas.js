@@ -242,14 +242,13 @@ const ListaTareas = () => {
                 </Navbar>
             </div>
             <Button variant="link" onClick={handleShowInsert} className="botonimagen btn" />
-           
             <Container className="text-center my-5" style={{ width: '65rem' }}>
                 <div className="row row-cols-1 row-cols-md-3 g-4">
                     {showCard.map((item) => 
                         <>
                             <div className="col">
                                 <div className="card h-100" key={item._id}>
-                                    <img src={item.imagen} className="card-img-top" alt="..." />
+                                   {/*<img src={item.imagen} className="card-img-top" alt="..." />*/} 
                                     <div className="card-body">
                                         <h5 className="card-title" id="nombre">{item.nombre}</h5>
                                         <p className="card-text" id="descripcion"  > {item.descripcion}</p>
@@ -263,7 +262,7 @@ const ListaTareas = () => {
                             </div>
                         </>
                     )
-                    };
+                    }       
                 </div>
                 </Container>
                

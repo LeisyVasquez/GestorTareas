@@ -154,6 +154,7 @@ router.post('/send-img', async (req, res) => {
         if (err) {
             return res.status(210).json({ status: 0, message: err });
         }
+        console.log(req.file.path)
         res.status(201).json({ status: 1, message: req.file });
     })
 })
