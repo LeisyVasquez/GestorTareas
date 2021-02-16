@@ -55,7 +55,7 @@ const ListaTareas = () => {
                     confirmButtonColor: "#54e346",
                 });
             } else{
-                alert('Error inesperado');
+                alert('Error inesperad');
             }
         } catch (err) {
             alert(err);
