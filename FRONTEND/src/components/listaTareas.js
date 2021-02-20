@@ -25,8 +25,10 @@ const ListaTareas = () => {
         console.log(e.target.files[0].name);
     };
 
+    //const [btnGuardarImagen, setBtnGuardarImagen] = useState("false"); Información mala 
     const onSubmitImg = async (e) => {
         e.preventDefault();
+        //setBtnGuardarImagen("true") Información mala 
         const formData = new FormData();
         formData.append("img", fileImg, imgname);
         try {
@@ -44,7 +46,7 @@ const ListaTareas = () => {
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#f96332",
                 });
-            } if(res.status === 201) {
+            } if (res.status === 201) {
                 setPathImg(res.data.message.path);
                 console.log(res.data);
                 swal.fire({
@@ -54,7 +56,7 @@ const ListaTareas = () => {
                     confirmButtonText: "¡Entendido!",
                     confirmButtonColor: "#54e346",
                 });
-            } else{
+            } else {
                 alert('Error inesperad');
             }
         } catch (err) {
@@ -96,11 +98,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Que maravilla",
                     confirmButtonColor: "#009900",
                 });
-                
+
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
                 }, 1000);
-                
+
 
             } else if (res.status === 221) {
                 swal.fire({
@@ -126,11 +128,9 @@ const ListaTareas = () => {
         console.log(data)
     }
 
-    //Mostrar tarjetas 
-    const [showCard, setShowCard] = useState([]);
-
-    useEffect(() => {cardPerUser()}, []);
-
+    //Mostrar tarjetas por usuario 
+    let [showCard, setShowCard] = useState([]);
+    useEffect(() => { cardPerUser() }, []);
     const cardPerUser = () => {
         api.get(`/tarjeta/${id_usuario}`).then(
             (res) => {
@@ -140,9 +140,11 @@ const ListaTareas = () => {
         );
         console.log(showCard)
     }
-  
+
+    console.log(showCard)
+
     //Eliminar Tarjeta 
-    function eliminarTarjeta(e){
+    function eliminarTarjeta(e) {
         const id = e.target.value;
         swal.fire({
             title: 'Advertencia',
@@ -153,50 +155,53 @@ const ListaTareas = () => {
             cancelButtonText: 'Mejor no',
             confirmButtonColor: "#009900",
             cancelButtonColor: "#f96332",
-          }).then((result) => {
+        }).then((result) => {
             if (result.value) {
                 api.delete(`/tarjeta/${id}`).then((res) => {
-                    if(res.status ===200){
+                    if (res.status === 200) {
                         swal.fire(
-                            {title: 'Tarea eliminada',
-                            icon: 'success',
-                            confirmButtonText: 'Ok',
-                            confirmButtonColor: "#009900"
+                            {
+                                title: 'Tarea eliminada',
+                                icon: 'success',
+                                confirmButtonText: 'Ok',
+                                confirmButtonColor: "#009900"
                             }
-                          )
-                    }else{
+                        )
+                    } else {
                         swal.fire(
-                            {title: 'Error en el servidor',
-                            icon: 'error',
-                            confirmButtonText: 'Ok',
-                            confirmButtonColor: "#f96332"
+                            {
+                                title: 'Error en el servidor',
+                                icon: 'error',
+                                confirmButtonText: 'Ok',
+                                confirmButtonColor: "#f96332"
                             }
-                          )
+                        )
                     }
                 })
 
-              setTimeout(() => {
-                window.location.href = "/listaTareas"
-            }, 1000);
-            
+                setTimeout(() => {
+                    window.location.href = "/listaTareas"
+                }, 1000);
+
 
             } else if (result.dismiss === swal.DismissReason.cancel) {
-              swal.fire(
-                {
-                title: 'Operación cancelada exitosamente',
-                icon: 'warning',
-                confirmButtonText: 'Ok',
-                confirmButtonColor: "#f96332"
-                }
-              )
+                swal.fire(
+                    {
+                        title: 'Operación cancelada exitosamente',
+                        icon: 'warning',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: "#f96332"
+                    }
+                )
             }
-          })
+        })
     }
 
     //Modal editar
     const [showUpdate, setShowUpdate] = useState(false);
     const handleCloseUpdate = () => setShowUpdate(false);
     const [idCardEdit, setIdCardEdit] = useState({});
+
     const handleShowUpdate = (e) => {
         setShowUpdate(true)
         setIdCardEdit(e.target.value);
@@ -205,14 +210,24 @@ const ListaTareas = () => {
 
     function sendInfoEdit(e) {
         e.preventDefault;
-        const data = {
-            nombre: targetData.nombre,
-            imagen: pathImg,
-            descripcion: targetData.descripcion,
-            prioridad: targetData.prioridad,
-            fecha_vencimiento: targetData.fecha_vencimiento
+        let data = {};
+        if(pathImg == ""){
+            data = {
+                id_usuario: id_usuario,
+                nombre: targetData.nombre,
+                descripcion: targetData.descripcion,
+                prioridad: targetData.prioridad,
+                fecha_vencimiento: targetData.fecha_vencimiento
+            }
+        }else{
+            data = {
+                nombre: targetData.nombre,
+                imagen: pathImg,
+                descripcion: targetData.descripcion,
+                prioridad: targetData.prioridad,
+                fecha_vencimiento: targetData.fecha_vencimiento
+            }
         }
-
         api.put(`/tarjeta/${idCardEdit}`, data).then((res) => {
             if (res.status === 200) {
                 console.log(res.status)
@@ -223,11 +238,11 @@ const ListaTareas = () => {
                     confirmButtonText: "Ok",
                     confirmButtonColor: "#009900"
                 });
-            
+
                 setTimeout(() => {
                     window.location.href = "/listaTareas"
                 }, 1000);
-                
+
             } else if (res.status === 210) {
                 swal.fire({
                     icon: "error",
@@ -249,6 +264,13 @@ const ListaTareas = () => {
         })
         console.log(data)
     }
+    //Filtro para traer información a editar
+    function mostrarTarjetas(){ 
+        showCard = showCard.filter(cards => cards._id === idCardEdit);
+        console.log(showCard);
+    }
+
+    
 
     return (
         <div>
@@ -262,16 +284,16 @@ const ListaTareas = () => {
             <Button variant="link" onClick={handleShowInsert} className="botonimagen btn" />
             <Container className="text-center my-5" style={{ width: '65rem' }}>
                 <div className="row row-cols-1 row-cols-md-3 g-4">
-                    {showCard.map((item) => 
+                    {showCard.map((item) =>
                         <>
                             <div className="col">
                                 <div className="card h-100" key={item._id}>
-                                   {/*<img src={item.imagen} className="card-img-top" alt="..." />*/} 
+                                    {/*<img src={item.imagen} className="card-img-top" alt="..." />*/}
                                     <div className="card-body">
                                         <h5 className="card-title" id="nombre">{item.nombre}</h5>
                                         <p className="card-text" id="descripcion"  > {item.descripcion}</p>
-                                        <Button className="ml-3" style={{ background: "#b34180"}} value={item._id} onClick={handleShowUpdate} >Editar</Button>
-                                        <Button  key={item._id} className="ml-3" style={{ background: "#009900" }} onClick={eliminarTarjeta} value={item._id}>Eliminar</Button>
+                                        <Button className="ml-3" style={{ background: "#b34180" }} value={item._id} onClick={handleShowUpdate} >Editar</Button>
+                                        <Button key={item._id} className="ml-3" style={{ background: "#009900" }} onClick={eliminarTarjeta} value={item._id}>Eliminar</Button>
                                     </div>
                                     <div className="card-footer">
                                         <small className="text-muted" id="fecha_vencimiento" value={item.fecha_vencimiento}>{item.fecha_vencimiento}</small>
@@ -280,12 +302,12 @@ const ListaTareas = () => {
                             </div>
                         </>
                     )
-                    }       
+                    }
                 </div>
-                </Container>
-               
+            </Container>
 
-            {/*Modal crear tarea */}   
+
+            {/*Modal crear tarea */}
             <Modal show={showInsert} onHide={handleCloseInsert} centered>
                 <Modal.Header closeButton style={{ background: 'rgba(179, 65, 128,0.2)' }}>
                     <Modal.Title>Crear nueva tarea</Modal.Title>
@@ -332,39 +354,41 @@ const ListaTareas = () => {
                 </Modal.Footer>
             </Modal>
 
-
-            {/*Modal editar tarea */}   
+            {/*Modal editar tarea */}
             <Modal show={showUpdate} onHide={handleCloseUpdate} centered>
                 <Modal.Header closeButton style={{ background: 'rgba(179, 65, 128,0.2)' }}>
                     <Modal.Title>Editar tarea nueva</Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{ background: 'rgba(179, 65, 128,0.2)' }}>
-                    <Form.Group>
-                        <Form.Label>Nombre de la tarea</Form.Label>
-                        <Form.Control id="nombre" onChange={datosTarjeta} />
-                    </Form.Group>
-                    <Form.Row>
-                        <Form.Group as={Col}>
-                            <Form.Label>Prioridad</Form.Label>
-                            <Form.Control as="select" id="prioridad" onChange={datosTarjeta}>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                            </Form.Control>
+                    {mostrarTarjetas()}
+                    {showCard.map((item) =>
+                        <>
+                        <Modal.Body style={{ background: 'rgba(179, 65, 128,0.2)' }}>
+                        <Form.Group>
+                            <Form.Label>Nombre de la tarea</Form.Label>
+                            <Form.Control  id="nombre" onChange={datosTarjeta} defaultValue={item.nombre} />
                         </Form.Group>
-                        <Form.Group as={Col}>
-                            <Form.Label>Fecha de vencimiento</Form.Label>
-                            <Form.Control type="date" id="fecha_vencimiento" onChange={datosTarjeta} />
+                        <Form.Row>
+                            <Form.Group as={Col}>
+                                <Form.Label>Prioridad</Form.Label>
+                                <Form.Control as="select" id="prioridad" onChange={datosTarjeta} defaultValue={item.prioridad}>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                </Form.Control>
+                            </Form.Group>
+                            <Form.Group as={Col}>
+                                <Form.Label>Fecha de vencimiento</Form.Label>
+                                <Form.Control type="date" id="fecha_vencimiento" onChange={datosTarjeta} defaultValue={item.fecha_vencimiento} />
+                            </Form.Group>
+                        </Form.Row>
+                        <Form.Group>
+                            <Form.Control as="textarea" rows={4} placeholder="Descripción" id="descripcion" onChange={datosTarjeta} defaultValue={item.descripcion} />
                         </Form.Group>
-                    </Form.Row>
-                    <Form.Group>
-                        <Form.Control as="textarea" rows={4} placeholder="Descripción" id="descripcion" onChange={datosTarjeta} />
-                    </Form.Group>
-                    <Form onSubmit={onSubmitImg}>
+                        <Form onSubmit={onSubmitImg}>
                         <div className="mb-3">
-                            <Form.File id="formcheck-api-custom" custom >
-                                <Form.File.Input id="imagen" onChange={onChangeImg} />
-                                <Form.File.Label data-browse="Button" style={{ border: '2px solid rgba(179, 65, 128)' }}>{imgname}</Form.File.Label>
+                            <Form.File id="formcheck-api-custom" custom defaultValue={item.imagen}>
+                                <Form.File.Input onChange={onChangeImg}  />
+                                <Form.File.Label data-browse="Button" style={{ border: '2px solid rgba(179, 65, 128)' }}>{item.imagen}</Form.File.Label>
                             </Form.File>
                         </div>
                         <input
@@ -373,13 +397,17 @@ const ListaTareas = () => {
                             className="Boton2 mt-2"
                         />
                     </Form>
-                </Modal.Body>
+                    </Modal.Body>
                 <Modal.Footer style={{ background: 'rgba(179, 65, 128,0.2)' }}>
                     <Button variant="secondary" onClick={handleCloseUpdate}>Cerrar</Button>
                     <Button onClick={sendInfoEdit} style={{ background: "#b34180" }}>Guardar</Button>
                 </Modal.Footer>
-            </Modal>
-        </div>
+                    </>
+                    )
+                    }
+            </Modal >
+            
+        </div >
     );
 }
 

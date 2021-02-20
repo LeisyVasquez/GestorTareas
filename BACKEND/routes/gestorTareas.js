@@ -8,6 +8,8 @@ const uuid = require('uuid/v4');
 const Usuario = require('../models/Usuario')
 const Tarjeta = require('../models/Tarjeta');
 
+//Nodemailer
+const {sendEmail} = require('./email');
 
 //Ver usuarios
 router.get('/usuario', async (req, res) => {
@@ -101,6 +103,22 @@ router.post('/tarjeta', async (req, res) => {
 router.put('/tarjeta/:idCardEdit', async (req, res) => {
     const { nombre, imagen, descripcion, prioridad, fecha_vencimiento } = req.body;
     const idCardEdit = req.params.idCardEdit;
+        await Tarjeta.findByIdAndUpdate(idCardEdit, {
+            $set: req.body
+        }, (err, resulset) => { 
+            if (err) {
+                res.status(221).json(err)
+            } if (resulset) {
+                res.status(200).json({ message: "Todo bien, todo bonito" });
+            }
+        }
+        )
+     
+});
+
+/*router.put('/tarjeta/:idCardEdit', async (req, res) => {
+    const { nombre, imagen, descripcion, prioridad, fecha_vencimiento } = req.body;
+    const idCardEdit = req.params.idCardEdit;
     if (nombre != "" & imagen != "" & descripcion != "" & prioridad != "" & fecha_vencimiento != "") {
         await Tarjeta.findByIdAndUpdate(idCardEdit, {
             $set: req.body
@@ -115,7 +133,7 @@ router.put('/tarjeta/:idCardEdit', async (req, res) => {
     } else {
         res.status(210).json({ message: 'Falta algún campo por enviar' });
     }
-});
+}); */
 
 //Eliminar tarjeta
 router.delete('/tarjeta/:id', async (req, res) => {
@@ -159,5 +177,8 @@ router.post('/send-img', async (req, res) => {
         }
     })
 })
+
+//Enviar correos al registrarse
+router.post('/sendEmail/',sendEmail);
 
 module.exports = router;
