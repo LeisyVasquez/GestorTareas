@@ -34,17 +34,24 @@ const InicioSeccion = () => {
                     confirmButtonColor: "#f96332",
                   });
                   console.log(res.status)
-            }if(res.status === 200){
+            }else if(res.status === 200){
                 console.log(res.status);
                 console.log(res.data.id)
                 const id = res.data.id;
                 saveToLocal('id', id);
                 window.location.href = "/listaTareas"
-            }if(res.status === 210){               
+            }else if(res.status === 210){               
                   console.log(res.status)
                   swal.fire({
                     icon: "error",
                     title: "Credenciales incorrectas",
+                    confirmButtonText: "Entendido",
+                    confirmButtonColor: "#f96332",
+                  });
+            }else{
+                swal.fire({
+                    icon: "error",
+                    title: "Digite todos los campos necesarios",
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#f96332",
                   });
