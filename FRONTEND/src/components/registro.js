@@ -18,6 +18,9 @@ const Registro = () => {
     console.log(userData);
   }
 
+
+ 
+
   function sendInfo(e) {
     e.preventDefault();
     console.log(userData)
@@ -30,11 +33,19 @@ const Registro = () => {
       }
       api.post("/usuario", data).then((res, err) => {
         if (res.status === 201) {
-          console.log(res.status);
-          const id = res.data.id;
-          console.log(id);
-          saveToLocal('id', id);
-          window.location.href = "/listaTareas"
+          api.post("/sendEmail", data).then((res) => {
+            if (res.state === 0) {
+              alert(
+                "No se pudo enviar la confimación de credenciales al correo proporcionado"
+              );
+            }else{
+              console.log(res.status);
+              const id = res.data.id;
+              console.log(id);
+              saveToLocal('id', id);
+              window.location.href = "/listaTareas"
+            }
+          });
         } if (res.status === 221) {
           console.log(res.status)
           swal.fire({
