@@ -20,3 +20,5 @@ app.use('/api',require('./routes/gestorTareas'));
 app.listen(app.get('port'),()=>{
     console.log(`Servidor conectado en el puerto ${app.get('port')}`);
 })
+
+module.exports = app;

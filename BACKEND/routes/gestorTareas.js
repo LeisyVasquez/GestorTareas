@@ -24,22 +24,27 @@ router.get('/usuario', async (req, res) => {
 //Insertar usuarios
 router.post('/usuario', async (req, res) => {
     let { nombres, apellidos, correo, contrasena } = req.body;
-    contrasena = await bcryptjs.hash(contrasena, 8);
-    if (nombres && apellidos && correo && contrasena) {
-        const newUsuario = new Usuario({ nombres, apellidos, correo, contrasena });
-        console.log(newUsuario);
-        newUsuario.save(
-            (err, resulset) => {
-                if (err) {
-                    res.status(210).json({ message: err.message });
-                    console.log(err);
-                } if (resulset) {
-                    res.status(201).json({ id: resulset.id, contrasena: resulset.contrasena });
-                }
-            })
-    } else {
-        res.status(221).json({ message: 'Falta algún campo por enviar' });
+    try {
+        contrasena = await bcryptjs.hash(contrasena, 8);
+        if (nombres && apellidos && correo && contrasena) {
+            const newUsuario = new Usuario({ nombres, apellidos, correo, contrasena });
+            console.log(newUsuario);
+            newUsuario.save(
+                (err, resulset) => {
+                    if (err) {
+                        res.status(210).json({ message: err.message });
+                        console.log(err);
+                    } if (resulset) {
+                        res.status(201).json({ id: resulset.id, contrasena: resulset.contrasena });
+                    }
+                })
+        } else {
+            res.status(221).json({ message: 'Falta algún campo por enviar' });
+        }
+    } catch (e) {
+        console.log(e);
     }
+
 });
 
 //Eliminar usuario
