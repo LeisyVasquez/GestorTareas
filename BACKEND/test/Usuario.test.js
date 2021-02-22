@@ -18,5 +18,14 @@ describe("Pruebas para el modelo Usuario",()=>{
                     contrasena: faker.internet.password()
                 })
             expect(res.statusCode).toEqual(201)
+            console.log(res)
+    });
+    it("Eliminar usuario", async()=>{
+        const res = await request(app)
+            .delete('/usuario')
+            .send({ 
+                    id: 1,   
+                })
+            expect(res.statusCode).toEqual(201)
     });
 })
